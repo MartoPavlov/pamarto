@@ -17,8 +17,8 @@ if (existsSync(appPath)) {
   if (app === "shared") {
     console.log("The shared project is not runnable!");
   } else {
-    console.log(`Starting ${app}...`);
     if (command === "start") {
+      console.log(`Starting ${app} on ${env}...`);
       const envConfigPath = `./environments/${env}.environment.ts`;
 
       if (existsSync(envConfigPath)) {
@@ -26,9 +26,19 @@ if (existsSync(appPath)) {
       } else {
         throw new Error(`Unknown environment ${env}`);
       }
-    }
 
-    exec(`cd ${appPath} && npx react-scripts ${command}`);
+      exec(`npx react-scripts ${command}`, { cwd: appPath });
+    } else if (command === "build") {
+      console.log(`Building ${app}...`);
+
+      exec("npx react-scripts build", { cwd: appPath }, (err) => {
+        if (err) {
+          console.log(`Failed to build ${app}!`);
+        } else {
+          console.log(`Builded ${app} successfully!`);
+        }
+      });
+    }
   }
 } else {
   console.log(`App ${app} does not exist!`);
